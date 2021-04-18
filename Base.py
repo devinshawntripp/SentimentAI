@@ -41,12 +41,17 @@ stopwords = nltk.corpus.stopwords.words("english")
 
 # Opening JSON file
 tweets = []
-for line in open('/Users/devintripp/Desktop/Amazon_Reviews.nosync/AmazonReviews1.json', 'r'):
+for line in open('E:\Amazon_Reviews\AmazonReviews1.json', 'r'):
     tweets.append(json.loads(line))
+    
+
 
 
 # returns JSON object as
-df = pd.DataFrame(tweets)
+df = pd.DataFrame(tweets, columns= ['overall', 'reviewText'])
+
+
+# print(df.head(5))
 
 
 # altText = [w for w in tweets]
@@ -57,28 +62,37 @@ stemmer = PorterStemmer()
 lemmatizer = WordNetLemmatizer()
 
 # print(df['summary'])
-df = df.drop(['reviewTime', 'reviewerID', 'asin',
-             'unixReviewTime', 'style'], axis=1)
+# df = df.drop(['reviewTime', 'reviewerID', 'asin',
+#              'unixReviewTime', 'style'], axis=1)
 # wordsList = [str(df['reviewText'])]
 
-print(df.head(10))
+# print(df.head(10))
 
 
 def clean(word):
-    print(word)
-    re.sub("#[0-9A-Za-Z]+", "", word)  # delete hastags
-    re.sub("@[0-9A-Za-Z]+", "", word)  # remove @'s
-    re.sub("\\n", "", word)  # remove any new lines
-    re.sub("https?:\/\/S+", "", word)  # remove hyperlinks
-    return word
+    strWord = str(word)
+    re.sub("#[A-Za-z0-9]+", "", strWord)  # delete hastags
+    re.sub("@[A-Za-z0-9]+", "", strWord)  # remove @'s
+    re.sub("\\n", "", strWord)  # remove any new lines
+    re.sub("https?:\/\/S+", "", strWord)  # remove hyperlinks
+    return strWord
 
 
 new_df = pd.DataFrame()
-new_df['reviews'] = df['reviewText']
 
-wordList = new_df['reviews'].toList()
+df['cleanedText'] = df['reviewText'].apply(clean)
+# print(df['cleanedText'])
 
-print(new_df.head(4))
+wordList = df['cleanedText'].values.tolist()
+
+
+results = sentiment_classifier(wordList)
+
+print(results)
+
+# wordList = new_df['reviews'].toList()
+
+# print(new_df.head(4))
 
 
 # for someWord in wordsList:
