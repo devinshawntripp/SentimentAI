@@ -3,6 +3,7 @@ import pandas as pd
 import nltk
 import re
 import string
+import os
 # nltk.download([
 #     "names",
 #     "stopwords",
@@ -39,16 +40,16 @@ stopwords = nltk.corpus.stopwords.words("english")
 
 # print(words)
 
+testFile = os.getenv('TEST_FILE')
+
 # Opening JSON file
 tweets = []
-for line in open('E:\Amazon_Reviews\AmazonReviews1.json', 'r'):
+for line in open(testFile, 'r'):
     tweets.append(json.loads(line))
-    
-
 
 
 # returns JSON object as
-df = pd.DataFrame(tweets, columns= ['overall', 'reviewText'])
+df = pd.DataFrame(tweets, columns=['overall', 'reviewText'])
 
 
 # print(df.head(5))
